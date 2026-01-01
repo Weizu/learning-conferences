@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maîtriser Git de A à Z - Formation complète</title>
+    <style>
+        /* Reset et variables */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-main: #1a1a2e;
+            --bg-slide: #16213e;
+            --accent: #0f3460;
+            --highlight: #e94560;
+            --text: #eaeaea;
+            --text-dim: #a0a0a0;
+            --success: #4ecca3;
+            --warning: #ffa41b;
+            --code-bg: #0d1117;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-main);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        /* Container principal */
+        #screen {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header avec titre et logo */
+        header {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--bg-slide) 100%);
+            padding: 20px 40px;
+            border-bottom: 3px solid var(--highlight);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .slide-counter {
+            font-size: 1.2em;
+            color: var(--text-dim);
+        }
+
+        /* Zone de contenu des slides */
+        main {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            background: var(--bg-slide);
+            overflow-y: auto;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Slide de couverture */
+        .slide.couv {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide.couv h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .slide.couv .subtitle {
+            font-size: 2em;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        /* Slide de fin */
+        .slide.end {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Titres */
+        h1 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            color: var(--highlight);
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--success);
+            border-bottom: 3px solid var(--success);
+            padding-bottom: 15px;
+        }
+
+        h3 {
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+            color: var(--warning);
+        }
+
+        h4 {
+            font-size: 1.4em;
+            margin: 20px 0 15px 0;
+            color: var(--text);
+        }
+
+        /* Listes */
+        ul, ol {
+            margin: 20px 0 20px 40px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin: 15px 0;
+            font-size: 1.3em;
+        }
+
+        li::marker {
+            color: var(--highlight);
+        }
+
+        /* Tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 1.2em;
+        }
+
+        th {
+            background: var(--accent);
+            color: var(--text);
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            border: 2px solid var(--highlight);
+        }
+
+        td {
+            padding: 18px 20px;
+            border: 1px solid var(--text-dim);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        tr:hover {
+            background: rgba(233, 69, 96, 0.1);
+        }
+
+        /* Code */
+        pre {
+            background: var(--code-bg);
+            border-left: 5px solid var(--highlight);
+            padding: 25px;
+            margin: 25px 0;
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #4ecca3;
+            font-size: 1.1em;
+        }
+
+        pre code {
+            color: #a8dadc;
+        }
+
+        .command {
+            color: #4ecca3;
+        }
+
+        .comment {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* Layout à deux colonnes */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        /* Classe pour masquer/révéler */
+        .Cmasque {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .Cmasque.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Emphase */
+        .highlight {
+            color: var(--highlight);
+            font-weight: 600;
+        }
+
+        .success {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .warning {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        /* Emojis et icônes */
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        /* Box avec bordure */
+        .info-box {
+            background: rgba(78, 204, 163, 0.1);
+            border-left: 5px solid var(--success);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: rgba(255, 164, 27, 0.1);
+            border-left: 5px solid var(--warning);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .danger-box {
+            background: rgba(233, 69, 96, 0.1);
+            border-left: 5px solid var(--highlight);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        /* SVG center */
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--accent);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            border-top: 2px solid var(--highlight);
+        }
+
+        button {
+            background: var(--highlight);
+            color: var(--text);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #ff5f7a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        select {
+            background: var(--bg-slide);
+            color: var(--text);
+            border: 2px solid var(--highlight);
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media print {
+            body {
+                overflow: visible;
+            }
+            .slide {
+                display: block !important;
+                page-break-after: always;
+                height: auto;
+            }
+            nav, header {
+                display: none;
+            }
+        }
+
+        /* Aide pour projecteur */
+        .projecteur-aide {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div id="screen">
+        <header>
+            <h1 class="main-title">🚀 Maîtriser Git de A à Z</h1>
+            <span class="slide-counter">Diapo <span id="current-slide">1</span> / <span id="total-slides">0</span></span>
+        </header>
+
+        <main>
+            <!-- Slide 1: Couverture -->
+            <section class="slide couv active" data-slide="1">
+                <h1>🚀 Maîtriser Git de A à Z</h1>
+                <p class="subtitle">Du versioning aux workflows professionnels</p>
+                <p style="font-size: 1.3em; margin-top: 40px; opacity: 0.8;">Cours complet pour développeurs débutants</p>
+                
+                <svg width="300" height="120" style="margin-top: 60px;">
+                    <circle cx="75" cy="60" r="40" fill="#e94560" opacity="0.8"/>
+                    <circle cx="150" cy="60" r="40" fill="#4ecca3" opacity="0.8"/>
+                    <circle cx="225" cy="60" r="40" fill="#ffa41b" opacity="0.8"/>
+                </svg>
+            </section>
+
+            <!-- Slide 2: Objectifs -->
+            <section class="slide" data-slide="2">
+                <h2>🎯 Objectifs pédagogiques</h2>
+                <ul>
+                    <li>Comprendre le <span class="highlight">contrôle de version</span></li>
+                    <li class="Cmasque">Maîtriser les <span class="highlight">commandes Git essentielles</span></li>
+                    <li class="Cmasque">Gérer les <span class="highlight">branches</span> efficacement</li>
+                    <li class="Cmasque">Résoudre les <span class="highlight">conflits de merge</span></li>
+                    <li class="Cmasque">Appliquer la méthodologie <span class="highlight">Git-flow</span></li>
+                    <li class="Cmasque">Utiliser <span class="highlight">GitHub Desktop</span></li>
+                </ul>
+            </section>
+
+            <!-- MODULE 1 -->
+            <section class="slide" data-slide="3">
+                <h1 style="text-align: center; color: #667eea;">Module 1</h1>
+                <h2 style="text-align: center; border: none;">Le principe du versioning</h2>
+            </section>
+
+            <section class="slide" data-slide="4">
+                <h2>Pourquoi le versioning ?</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3 style="color: #e94560;">❌ Sans Git</h3>
+                        <ul>
+                            <li>projet_final.zip</li>
+                            <li>projet_final_v2.zip</li>
+                            <li>projet_final_v2_vraiment_final.zip</li>
+                            <li style="font-size: 0.9em;">projet_final_v2_vraiment_final_cette_fois.zip</li>
+                        </ul>
+                    </div>
+                    <div class="Cmasque">
+                        <h3 style="color: #4ecca3;">✅ Avec Git</h3>
+                        <ul>
+                            <li>Historique complet</li>
+                            <li>Collaboration fluide</li>
+                            <li>Traçabilité (qui, quoi, quand)</li>
+                            <li>Retour en arrière facile</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide" data-slide="5">
+                <h2>Types de contrôle de version</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Exemples</th>
+                            <th>Caractéristiques</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Local</td>
+                            <td>RCS</td>
+                            <td>Machine locale uniquement</td>
+                        </tr>
+                        <tr>
+                            <td>Centralisé</td>
+                            <td>SVN, CVS</td>
+                            <td>Serveur central, dépendance réseau</td>
+                        </tr>
+                        <tr style="background: rgba(78, 204, 163, 0.2);">
+                            <td><strong>Distribué</strong></td>
+                            <td><strong>Git, Mercurial</strong></td>
+                            <td><strong>Copie complète, travail hors-ligne</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="slide" data-slide="6">
+                <h2>Le workflow Git</h2>
+                <div class="svg-container">
+                    <svg width="1000" height="280" viewBox="0 0 1000 280">
+                        <!-- Working Directory -->
+                        <rect x="20" y="60" width="200" height="160" fill="#0d1117" stroke="#4ecca3" stroke-width="3" rx="8"/>
+                        <text x="120" y="95" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Working</text>
+                        <text x="120" y="125" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Directory</text>
+                        <text x="120" y="165" text-anchor="middle" fill="#a0a0a0" font-size="16">Fichiers</text>
+                        <text x="120" y="190" text-anchor="middle" fill="#a0a0a0" font-size="16">modifiés</text>
+
+                        <!-- Arrow 1 -->
+                        <path d="M 225 140 L 275 140" stroke="#4ecca3" stroke-width="4" fill="none" marker-end="url(#arrow1)"/>
+                        <text x="250" y="125" text-anchor="middle" fill="#4ecca3" font-size="17" font-weight="bold">git add</text>
+
+                        <!-- Staging Area -->
+                        <rect x="280" y="60" width="200" height="160" fill="#0d1117" stroke="#ffa41b" stroke-width="3" rx="8"/>
+                        <text x="380" y="95" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Staging</text>
+                        <text x="380" y="125" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Area</text>
+                        <text x="380" y="165" text-anchor="middle" fill="#a0a0a0" font-size="16">Prêts pour</text>
+                        <text x="380" y="190" text-anchor="middle" fill="#a0a0a0" font-size="16">commit</text>
+
+                        <!-- Arrow 2 -->
+                        <path d="M 485 140 L 535 140" stroke="#ffa41b" stroke-width="4" fill="none" marker-end="url(#arrow2)"/>
+                        <text x="510" y="125" text-anchor="middle" fill="#ffa41b" font-size="17" font-weight="bold">git commit</text>
+
+                        <!-- Local Repository -->
+                        <rect x="540" y="60" width="200" height="160" fill="#0d1117" stroke="#667eea" stroke-width="3" rx="8"/>
+                        <text x="640" y="95" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Local</text>
+                        <text x="640" y="125" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Repository</text>
+                        <text x="640" y="165" text-anchor="middle" fill="#a0a0a0" font-size="16">Historique</text>
+                        <text x="640" y="190" text-anchor="middle" fill="#a0a0a0" font-size="16">local</text>
+
+                        <!-- Arrow 3 -->
+                        <path d="M 745 140 L 795 140" stroke="#667eea" stroke-width="4" fill="none" marker-end="url(#arrow3)"/>
+                        <text x="770" y="125" text-anchor="middle" fill="#667eea" font-size="17" font-weight="bold">git push</text>
+
+                        <!-- Remote Repository -->
+                        <rect x="800" y="60" width="200" height="160" fill="#0d1117" stroke="#e94560" stroke-width="3" rx="8"/>
+                        <text x="900" y="95" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Remote</text>
+                        <text x="900" y="125" text-anchor="middle" fill="#eaeaea" font-size="20" font-weight="bold">Repository</text>
+                        <text x="900" y="165" text-anchor="middle" fill="#a0a0a0" font-size="16">GitHub</text>
+                        <text x="900" y="190" text-anchor="middle" fill="#a0a0a0" font-size="16">GitLab...</text>
+
+                        <!-- Arrow markers -->
+                        <defs>
+                            <marker id="arrow1" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                <path d="M2,2 L2,10 L10,6 z" fill="#4ecca3"/>
+                            </marker>
+                            <marker id="arrow2" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                <path d="M2,2 L2,10 L10,6 z" fill="#ffa41b"/>
+                            </marker>
+                            <marker id="arrow3" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto">
+                                <path d="M2,2 L2,10 L10,6 z" fill="#667eea"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- MODULE 2 -->
+            <section class="slide" data-slide="7">
+                <h1 style="text-align: center; color: #4ecca3;">Module 2</h1>
+                <h2 style="text-align: center; border: none;">Les commandes principales</h2>
+            </section>
+
+            <section class="slide" data-slide="8">
+                <h2>Configuration initiale</h2>
+                <pre><code><span class="comment"># Configuration obligatoire (identité)</span>
+<span class="command">git config --global user.name "Votre Nom"</span>
+<span class="command">git config --global user.email "votre.email@exemple.com"</span>
+
+<span class="comment"># Configurations recommandées</span>
+<span class="command">git config --global init.defaultBranch main</span>
+<span class="command">git config --global core.editor "code --wait"</span>
+
+<span class="comment"># Vérifier la configuration</span>
+<span class="command">git config --list</span></code></pre>
+            </section>
+
+            <section class="slide" data-slide="9">
+                <h2>Commandes de base</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Commande</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>git init</code></td>
+                            <td>Initialise un nouveau dépôt Git</td>
+                        </tr>
+                        <tr>
+                            <td><code>git clone &lt;url&gt;</code></td>
+                            <td>Clone un dépôt distant</td>
+                        </tr>
+                        <tr>
+                            <td><code>git status</code></td>
+                            <td>Affiche l'état des fichiers</td>
+                        </tr>
+                        <tr>
+                            <td><code>git add .</code></td>
+                            <td>Ajoute tous les fichiers au staging</td>
+                        </tr>
+                        <tr>
+                            <td><code>git commit -m "msg"</code></td>
+                            <td>Enregistre les modifications</td>
+                        </tr>
+                        <tr>
+                            <td><code>git log --oneline</code></td>
+                            <td>Affiche l'historique condensé</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="slide" data-slide="10">
+                <h2>Synchronisation</h2>
+                <pre><code><span class="comment"># Ajouter un dépôt distant</span>
+<span class="command">git remote add origin https://github.com/user/repo.git</span>
+
+<span class="comment"># Premier push (définit l'upstream)</span>
+<span class="command">git push -u origin main</span>
+
+<span class="comment"># Récupérer et fusionner automatiquement</span>
+<span class="command">git pull</span>
+
+<span class="comment"># Récupérer sans fusionner</span>
+<span class="command">git fetch</span></code></pre>
+                
+                <div class="warning-box">
+                    <p><span class="emoji">⚠️</span> <strong>Règle d'or :</strong> Toujours faire <code>git pull</code> avant de commencer à travailler !</p>
+                </div>
+            </section>
+
+            <section class="slide" data-slide="11">
+                <h2>Annulation</h2>
+                <pre><code><span class="comment"># Annuler des modifications non stagées</span>
+<span class="command">git restore &lt;fichier&gt;</span>
+
+<span class="comment"># Retirer du staging</span>
+<span class="command">git restore --staged &lt;fichier&gt;</span>
+
+<span class="comment"># Annuler un commit (crée un nouveau commit)</span>
+<span class="command">git revert &lt;commit&gt;</span>
+
+<span class="comment"># Annuler le dernier commit (garde les modifs)</span>
+<span class="command">git reset --soft HEAD~1</span></code></pre>
+            </section>
+
+            <!-- MODULE 3 -->
+            <section class="slide" data-slide="12">
+                <h1 style="text-align: center; color: #ffa41b;">Module 3</h1>
+                <h2 style="text-align: center; border: none;">Les branches</h2>
+            </section>
+
+            <section class="slide" data-slide="13">
+                <h2>Pourquoi les branches ?</h2>
+                <ul>
+                    <li><span class="emoji">✨</span> Développer des fonctionnalités isolées</li>
+                    <li class="Cmasque"><span class="emoji">👥</span> Travail parallèle en équipe</li>
+                    <li class="Cmasque"><span class="emoji">🔍</span> Faciliter les revues de code (Pull Requests)</li>
+                    <li class="Cmasque"><span class="emoji">🐛</span> Isoler les corrections de bugs (hotfix)</li>
+                </ul>
+            </section>
+
+            <section class="slide" data-slide="14">
+                <h2>Visualisation des branches</h2>
+                <div class="svg-container">
+                    <svg width="800" height="350" viewBox="0 0 800 350">
+                        <!-- Main branch -->
+                        <line x1="50" y1="175" x2="750" y2="175" stroke="#4ecca3" stroke-width="4"/>
+                        <circle cx="100" cy="175" r="12" fill="#4ecca3"/>
+                        <circle cx="230" cy="175" r="12" fill="#4ecca3"/>
+                        <circle cx="360" cy="175" r="12" fill="#4ecca3"/>
+                        <circle cx="490" cy="175" r="12" fill="#4ecca3"/>
+                        <circle cx="620" cy="175" r="12" fill="#4ecca3"/>
+                        <circle cx="700" cy="175" r="12" fill="#4ecca3"/>
+                        
+                        <text x="100" y="215" text-anchor="middle" fill="#4ecca3" font-size="18" font-weight="bold">main</text>
+
+                        <!-- Feature branch -->
+                        <path d="M 230 175 Q 295 120, 360 65 L 555 65 Q 620 65, 685 130 L 700 175" 
+                              stroke="#e94560" stroke-width="4" fill="none"/>
+                        <circle cx="360" cy="65" r="12" fill="#e94560"/>
+                        <circle cx="457" cy="65" r="12" fill="#e94560"/>
+                        <circle cx="555" cy="65" r="12" fill="#e94560"/>
+                        
+                        <text x="457" y="40" text-anchor="middle" fill="#e94560" font-size="18" font-weight="bold">feature-login</text>
+
+                        <!-- Develop branch -->
+                        <path d="M 100 175 L 100 285 L 650 285" 
+                              stroke="#667eea" stroke-width="4" fill="none"/>
+                        <circle cx="230" cy="285" r="12" fill="#667eea"/>
+                        <circle cx="425" cy="285" r="12" fill="#667eea"/>
+                        <circle cx="620" cy="285" r="12" fill="#667eea"/>
+                        
+                        <text x="425" y="325" text-anchor="middle" fill="#667eea" font-size="18" font-weight="bold">develop</text>
+                    </svg>
+                </div>
+            </section>
+
+            <section class="slide" data-slide="15">
+                <h2>Commandes de gestion</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Commande</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lister les branches</td>
+                            <td><code>git branch</code></td>
+                        </tr>
+                        <tr>
+                            <td>Créer une branche</td>
+                            <td><code>git branch &lt;nom&gt;</code></td>
+                        </tr>
+                        <tr style="background: rgba(78, 204, 163, 0.2);">
+                            <td><strong>Changer de branche ⭐</strong></td>
+                            <td><code>git switch &lt;nom&gt;</code></td>
+                        </tr>
+                        <tr>
+                            <td>Créer et basculer</td>
+                            <td><code>git switch -c &lt;nom&gt;</code></td>
+                        </tr>
+                        <tr>
+                            <td>Fusionner</td>
+                            <td><code>git merge &lt;branche&gt;</code></td>
+                        </tr>
+                        <tr>
+                            <td>Supprimer</td>
+                            <td><code>git branch -d &lt;nom&gt;</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="margin-top: 20px; font-size: 1.1em;">
+                    <span class="emoji">💡</span> <code>git switch</code> est préféré à <code>git checkout</code> (plus intuitif)
+                </p>
+            </section>
+
+            <section class="slide" data-slide="16">
+                <h2>Fusion de branches (merge)</h2>
+                <div class="two-columns">
+                    <div>
+                        <h4>Avant merge</h4>
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <line x1="50" y1="110" x2="300" y2="110" stroke="#4ecca3" stroke-width="3"/>
+                            <circle cx="90" cy="110" r="10" fill="#4ecca3"/>
+                            <circle cx="170" cy="110" r="10" fill="#4ecca3"/>
+                            
+                            <path d="M 170 110 L 240 50" stroke="#e94560" stroke-width="3" fill="none"/>
+                            <circle cx="240" cy="50" r="10" fill="#e94560"/>
+                            <circle cx="300" cy="50" r="10" fill="#e94560"/>
+                            
+                            <text x="90" y="145" text-anchor="middle" fill="#4ecca3" font-size="15">main</text>
+                            <text x="270" y="35" text-anchor="middle" fill="#e94560" font-size="15">feature</text>
+                        </svg>
+                    </div>
+                    <div class="Cmasque">
+                        <h4>Après merge (--no-ff)</h4>
+                        <svg width="400" height="220" viewBox="0 0 400 220">
+                            <line x1="50" y1="110" x2="350" y2="110" stroke="#4ecca3" stroke-width="3"/>
+                            <circle cx="90" cy="110" r="10" fill="#4ecca3"/>
+                            <circle cx="170" cy="110" r="10" fill="#4ecca3"/>
+                            <circle cx="330" cy="110" r="10" fill="#4ecca3"/>
+                            
+                            <path d="M 170 110 L 240 50 L 330 110" stroke="#e94560" stroke-width="3" fill="none"/>
+                            <circle cx="240" cy="50" r="10" fill="#e94560"/>
+                            <circle cx="300" cy="50" r="10" fill="#e94560"/>
+                            
+                            <text x="90" y="145" text-anchor="middle" fill="#4ecca3" font-size="15">main</text>
+                            <text x="330" y="145" text-anchor="middle" fill="#ffa41b" font-size="13">merge commit</text>
+                        </svg>
+                    </div>
+                </div>
+                <pre style="margin-top: 20px;"><code><span class="command">git switch main</span>
+<span class="command">git merge --no-ff feature-login</span></code></pre>
+            </section>
+
+            <!-- MODULE 4 -->
+            <section class="slide" data-slide="17">
+                <h1 style="text-align: center; color: #e94560;">Module 4</h1>
+                <h2 style="text-align: center; border: none;">Gestion des conflits</h2>
+            </section>
+
+            <section class="slide" data-slide="18">
+                <h2>Qu'est-ce qu'un conflit ?</h2>
+                <p style="font-size: 1.3em; margin-bottom: 30px;">Un conflit survient quand Git ne peut pas fusionner automatiquement deux modifications sur les mêmes lignes.</p>
+                
+                <div class="svg-container">
+                    <svg width="800" height="280" viewBox="0 0 800 280">
+                        <!-- Timeline -->
+                        <line x1="100" y1="140" x2="700" y2="140" stroke="#666" stroke-width="3"/>
+                        
+                        <!-- Initial state -->
+                        <circle cx="150" cy="140" r="18" fill="#4ecca3"/>
+                        <text x="150" y="110" text-anchor="middle" fill="#eaeaea" font-size="16">Initial</text>
+                        <text x="150" y="185" text-anchor="middle" fill="#a0a0a0" font-size="14">"Hello World"</text>
+                        
+                        <!-- Branch A -->
+                        <path d="M 150 140 L 350 60" stroke="#e94560" stroke-width="3" fill="none"/>
+                        <circle cx="350" cy="60" r="18" fill="#e94560"/>
+                        <text x="350" y="30" text-anchor="middle" fill="#e94560" font-size="16" font-weight="bold">Dev A</text>
+                        <text x="350" y="95" text-anchor="middle" fill="#a0a0a0" font-size="13">"Bonjour"</text>
+                        
+                        <!-- Branch B -->
+                        <path d="M 150 140 L 350 220" stroke="#667eea" stroke-width="3" fill="none"/>
+                        <circle cx="350" cy="220" r="18" fill="#667eea"/>
+                        <text x="350" y="255" text-anchor="middle" fill="#667eea" font-size="16" font-weight="bold">Dev B</text>
+                        <text x="350" y="275" text-anchor="middle" fill="#a0a0a0" font-size="13">"Hello Universe"</text>
+                        
+                        <!-- Merge point -->
+                        <path d="M 350 60 L 550 140" stroke="#e94560" stroke-width="3" fill="none" stroke-dasharray="8,8"/>
+                        <path d="M 350 220 L 550 140" stroke="#667eea" stroke-width="3" fill="none" stroke-dasharray="8,8"/>
+                        <circle cx="550" cy="140" r="25" fill="#ff6b6b" stroke="#fff" stroke-width="3"/>
+                        <text x="550" y="150" text-anchor="middle" fill="white" font-size="24" font-weight="bold">⚠</text>
+                        <text x="550" y="110" text-anchor="middle" fill="#ff6b6b" font-size="18" font-weight="bold">CONFLIT!</text>
+                    </svg>
+                </div>
+            </section>
+
+            <section class="slide" data-slide="19">
+                <h2>Anatomie d'un conflit</h2>
+                <pre style="font-size: 1.2em;"><code><<<<<<< HEAD
+Bonjour le Monde
+=======
+Hello Universe
+>>>>>>> feature-branch</code></pre>
+                
+                <table style="margin-top: 40px;">
+                    <thead>
+                        <tr>
+                            <th>Marqueur</th>
+                            <th>Signification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></td>
+                            <td>Début de votre version (branche actuelle)</td>
+                        </tr>
+                        <tr>
+                            <td><code>=======</code></td>
+                            <td>Séparateur entre les deux versions</td>
+                        </tr>
+                        <tr>
+                            <td><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code></td>
+                            <td>Fin de la version entrante (à fusionner)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="slide" data-slide="20">
+                <h2>Résolution étape par étape</h2>
+                <ol style="font-size: 1.3em;">
+                    <li><code>git status</code> → Identifier les fichiers en conflit</li>
+                    <li class="Cmasque">Ouvrir et résoudre manuellement chaque fichier</li>
+                    <li class="Cmasque">Supprimer les marqueurs de conflit <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code></li>
+                    <li class="Cmasque"><code>git add &lt;fichier&gt;</code> → Marquer comme résolu</li>
+                    <li class="Cmasque"><code>git commit</code> → Finaliser le merge</li>
+                </ol>
+                
+                <div class="info-box Cmasque" style="margin-top: 40px;">
+                    <p><span class="emoji">💡</span> <strong>Astuce :</strong> VS Code et GitHub Desktop offrent des interfaces visuelles pour résoudre les conflits !</p>
+                </div>
+            </section>
+
+            <!-- MODULE 5 -->
+            <section class="slide" data-slide="21">
+                <h1 style="text-align: center; color: #667eea;">Module 5</h1>
+                <h2 style="text-align: center; border: none;">Git-flow (méthodologie)</h2>
+            </section>
+
+            <section class="slide" data-slide="22">
+                <h2>Pourquoi une méthodologie ?</h2>
+                <p style="font-size: 1.4em; text-align: center; margin: 40px 0;">Sans convention → chaos organisationnel 😵</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stratégie</th>
+                            <th>Complexité</th>
+                            <th>Idéal pour</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GitHub Flow</td>
+                            <td>Simple</td>
+                            <td>Petites équipes, startups, déploiement continu</td>
+                        </tr>
+                        <tr style="background: rgba(102, 126, 234, 0.2);">
+                            <td><strong>Git-flow</strong></td>
+                            <td><strong>Complexe</strong></td>
+                            <td><strong>Grandes équipes, releases planifiées</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Trunk-Based</td>
+                            <td>Moyenne</td>
+                            <td>DevOps avancé, CI/CD mature</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="slide" data-slide="23">
+                <h2>Les branches Git-flow</h2>
+                <div class="svg-container">
+                    <svg width="900" height="450" viewBox="0 0 900 450">
+                        <!-- Main branch (production) -->
+                        <line x1="50" y1="225" x2="850" y2="225" stroke="#4ecca3" stroke-width="5"/>
+                        <circle cx="120" cy="225" r="14" fill="#4ecca3"/>
+                        <circle cx="360" cy="225" r="14" fill="#4ecca3"/>
+                        <circle cx="600" cy="225" r="14" fill="#4ecca3"/>
+                        <circle cx="800" cy="225" r="14" fill="#4ecca3"/>
+                        <text x="120" y="265" text-anchor="middle" fill="#4ecca3" font-size="20" font-weight="bold">main</text>
+                        <text x="850" y="270" text-anchor="middle" fill="#4ecca3" font-size="16">(production)</text>
+
+                        <!-- Develop branch -->
+                        <line x1="50" y1="325" x2="850" y2="325" stroke="#667eea" stroke-width="5"/>
+                        <circle cx="120" cy="325" r="12" fill="#667eea"/>
+                        <circle cx="240" cy="325" r="12" fill="#667eea"/>
+                        <circle cx="480" cy="325" r="12" fill="#667eea"/>
+                        <circle cx="720" cy="325" r="12" fill="#667eea"/>
+                        <text x="120" y="365" text-anchor="middle" fill="#667eea" font-size="20" font-weight="bold">develop</text>
+
+                        <!-- Feature branch -->
+                        <path d="M 240 325 L 300 380 L 420 380 L 480 325" stroke="#e94560" stroke-width="4" fill="none"/>
+                        <circle cx="300" cy="380" r="10" fill="#e94560"/>
+                        <circle cx="360" cy="380" r="10" fill="#e94560"/>
+                        <circle cx="420" cy="380" r="10" fill="#e94560"/>
+                        <text x="360" y="415" text-anchor="middle" fill="#e94560" font-size="16">feature/login</text>
+
+                        <!-- Release branch -->
+                        <path d="M 480 325 L 540 265 L 600 225" stroke="#ffa41b" stroke-width="4" fill="none"/>
+                        <circle cx="540" cy="265" r="10" fill="#ffa41b"/>
+                        <text x="570" y="255" text-anchor="middle" fill="#ffa41b" font-size="16">release/v1.0</text>
+
+                        <!-- Hotfix branch -->
+                        <path d="M 600 225 L 660 165 L 720 165 L 760 195 L 800 225" stroke="#ff6b6b" stroke-width="4" fill="none"/>
+                        <circle cx="660" cy="165" r="10" fill="#ff6b6b"/>
+                        <circle cx="720" cy="165" r="10" fill="#ff6b6b"/>
+                        <circle cx="760" cy="195" r="10" fill="#ff6b6b"/>
+                        <text x="720" y="145" text-anchor="middle" fill="#ff6b6b" font-size="16">hotfix/urgent</text>
+                    </svg>
+                </div>
+            </section>
+
+            <section class="slide" data-slide="24">
+                <h2>Types de branches</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Branche</th>
+                            <th>Rôle</th>
+                            <th>Durée de vie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>main</code></td>
+                            <td>Code en production</td>
+                            <td><strong>Permanente</strong></td>
+                        </tr>
+                        <tr>
+                            <td><code>develop</code></td>
+                            <td>Intégration des features</td>
+                            <td><strong>Permanente</strong></td>
+                        </tr>
+                        <tr>
+                            <td><code>feature/*</code></td>
+                            <td>Développement de nouvelles fonctionnalités</td>
+                            <td>Temporaire</td>
+                        </tr>
+                        <tr>
+                            <td><code>release/*</code></td>
+                            <td>Préparation d'une release (tests finaux)</td>
+                            <td>Temporaire</td>
+                        </tr>
+                        <tr>
+                            <td><code>hotfix/*</code></td>
+                            <td>Correction urgente en production</td>
+                            <td>Temporaire</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="slide" data-slide="25">
+                <h2>Cycle d'une feature</h2>
+                <pre><code><span class="comment"># 1. Créer la feature depuis develop</span>
+<span class="command">git switch develop</span>
+<span class="command">git switch -c feature/user-authentication</span>
+
+<span class="comment"># 2. Développer (plusieurs commits)</span>
+<span class="command">git commit -m "Add login form"</span>
+<span class="command">git commit -m "Add password validation"</span>
+<span class="command">git commit -m "Add session management"</span>
+
+<span class="comment"># 3. Fusionner dans develop</span>
+<span class="command">git switch develop</span>
+<span class="command">git merge --no-ff feature/user-authentication</span>
+
+<span class="comment"># 4. Supprimer la branche feature</span>
+<span class="command">git branch -d feature/user-authentication</span></code></pre>
+            </section>
+
+            <!-- MODULE 6 -->
+            <section class="slide" data-slide="26">
+                <h1 style="text-align: center; color: #ffa41b;">Module 6</h1>
+                <h2 style="text-align: center; border: none;">GitHub avec GitHub Desktop</h2>
+            </section>
+
+            <section class="slide" data-slide="27">
+                <h2>GitHub Desktop</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>✅ Caractéristiques</h3>
+                        <ul>
+                            <li>Gratuit et open-source (MIT)</li>
+                            <li>Windows et macOS</li>
+                            <li>Interface graphique intuitive</li>
+                            <li>Visualisation des diff</li>
+                            <li>Résolution de conflits guidée</li>
+                        </ul>
+                    </div>
+                    <div class="Cmasque">
+                        <h3>🚀 Opérations courantes</h3>
+                        <ul>
+                            <li>Cloner un repository</li>
+                            <li>Créer des commits</li>
+                            <li>Gérer les branches</li>
+                            <li>Push / Pull</li>
+                            <li>Créer des Pull Requests</li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="margin-top: 40px; text-align: center; font-size: 1.3em;">
+                    <span class="emoji">🔗</span> 
+                    <span class="highlight">desktop.github.com</span>
+                </p>
+            </section>
+
+            <section class="slide" data-slide="28">
+                <h2>Workflow avec GitHub Desktop</h2>
+                <ol style="font-size: 1.25em;">
+                    <li>Cloner un dépôt depuis GitHub</li>
+                    <li class="Cmasque">Créer une branche <code>feature/ma-contribution</code></li>
+                    <li class="Cmasque">Modifier des fichiers et visualiser les diff</li>
+                    <li class="Cmasque">Créer un commit avec message descriptif</li>
+                    <li class="Cmasque">Pusher la branche vers GitHub</li>
+                    <li class="Cmasque">Créer une Pull Request sur GitHub</li>
+                    <li class="Cmasque">Reviewer et merger la PR</li>
+                </ol>
+            </section>
+
+            <!-- MODULE 7 -->
+            <section class="slide" data-slide="29">
+                <h1 style="text-align: center; color: #e94560;">Module 7</h1>
+                <h2 style="text-align: center; border: none;">Alternatives à GitHub</h2>
+            </section>
+
+            <section class="slide" data-slide="30">
+                <h2>GitLab</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Caractéristiques</h3>
+                        <ul>
+                            <li>Plateforme DevOps complète</li>
+                            <li>CI/CD intégré nativement</li>
+                            <li>Cloud ou self-hosted</li>
+                            <li>DevSecOps avancé</li>
+                        </ul>
+                    </div>
+                    <div class="Cmasque">
+                        <h3>Quand l'utiliser ?</h3>
+                        <ul>
+                            <li>CI/CD intégré souhaité</li>
+                            <li>Hébergement sur serveur propre</li>
+                            <li>Grandes entreprises</li>
+                            <li>Sécurité renforcée nécessaire</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide" data-slide="31">
+                <h2>Gitea</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Caractéristiques</h3>
+                        <ul>
+                            <li>Service Git minimaliste</li>
+                            <li>Très léger (Raspberry Pi OK)</li>
+                            <li>Exécutable unique en Go</li>
+                            <li>100% gratuit (licence MIT)</li>
+                        </ul>
+                    </div>
+                    <div class="Cmasque">
+                        <h3>Quand l'utiliser ?</h3>
+                        <ul>
+                            <li>Serveur avec ressources limitées</li>
+                            <li>Projets personnels</li>
+                            <li>Homelab / auto-hébergement</li>
+                            <li>Besoin de simplicité maximale</li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="margin-top: 40px; text-align: center; font-size: 1.5em;">
+                    <span class="emoji">☕</span> 
+                    <em style="color: #ffa41b;">"Git with a cup of tea!"</em>
+                </p>
+            </section>
+
+            <section class="slide" data-slide="32">
+                <h2>Comparatif des plateformes</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Critère</th>
+                            <th>GitHub</th>
+                            <th>GitLab</th>
+                            <th>Gitea</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Facilité d'utilisation</td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                            <td>⭐⭐⭐⭐</td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td>CI/CD intégré</td>
+                            <td>GitHub Actions</td>
+                            <td>Natif</td>
+                            <td>Non (Gitea Actions dispo)</td>
+                        </tr>
+                        <tr>
+                            <td>Self-hosted</td>
+                            <td>Enterprise uniquement</td>
+                            <td>✅ Oui</td>
+                            <td>✅ Oui</td>
+                        </tr>
+                        <tr>
+                            <td>Ressources serveur</td>
+                            <td>N/A</td>
+                            <td>Élevées</td>
+                            <td>Minimales</td>
+                        </tr>
+                        <tr>
+                            <td>Idéal pour</td>
+                            <td>Open source, communauté</td>
+                            <td>Entreprises, DevOps</td>
+                            <td>Petits projets, homelab</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- CONCLUSION -->
+            <section class="slide" data-slide="33">
+                <h2>📚 Ressources complémentaires</h2>
+                <ul style="font-size: 1.3em;">
+                    <li><span class="highlight">git-scm.com/doc</span> - Documentation officielle Git</li>
+                    <li class="Cmasque"><span class="highlight">learngitbranching.js.org</span> - Apprentissage interactif visuel</li>
+                    <li class="Cmasque"><span class="highlight">docs.github.com</span> - Documentation GitHub complète</li>
+                    <li class="Cmasque"><span class="highlight">githowto.com</span> - Tutoriel guidé pas à pas</li>
+                </ul>
+            </section>
+
+            <section class="slide" data-slide="34">
+                <h2>🎓 Aide-mémoire des commandes</h2>
+                <pre style="font-size: 0.9em;"><code><span class="comment"># Configuration</span>
+<span class="command">git config --global user.name "Nom"</span>
+<span class="command">git config --global user.email "email@exemple.com"</span>
+
+<span class="comment"># Bases</span>
+<span class="command">git init                    <span class="comment"># Initialiser</span></span>
+<span class="command">git clone &lt;url&gt;            <span class="comment"># Cloner</span></span>
+<span class="command">git status                  <span class="comment"># État</span></span>
+<span class="command">git add .                   <span class="comment"># Tout ajouter</span></span>
+<span class="command">git commit -m "message"     <span class="comment"># Committer</span></span>
+
+<span class="comment"># Branches</span>
+<span class="command">git branch                  <span class="comment"># Lister</span></span>
+<span class="command">git switch &lt;branche&gt;       <span class="comment"># Changer</span></span>
+<span class="command">git switch -c &lt;nouvelle&gt;   <span class="comment"># Créer et changer</span></span>
+<span class="command">git merge &lt;branche&gt;        <span class="comment"># Fusionner</span></span>
+
+<span class="comment"># Synchronisation</span>
+<span class="command">git push -u origin main     <span class="comment"># Premier push</span></span>
+<span class="command">git pull                    <span class="comment"># Récupérer</span></span></code></pre>
+            </section>
+
+            <!-- Slide de fin -->
+            <section class="slide end" data-slide="35">
+                <h1>Merci ! 🎉</h1>
+                <h2 style="border: none; color: white;">Questions ?</h2>
+                <p style="font-size: 1.5em; margin-top: 60px;">
+                    <span class="emoji">💻</span> Bonne pratique avec Git !
+                </p>
+                <svg width="300" height="120" style="margin-top: 60px;">
+                    <circle cx="75" cy="60" r="40" fill="#e94560" opacity="0.8"/>
+                    <circle cx="150" cy="60" r="40" fill="#4ecca3" opacity="0.8"/>
+                    <circle cx="225" cy="60" r="40" fill="#667eea" opacity="0.8"/>
+                </svg>
+            </section>
+
+        </main>
+
+        <nav>
+            <button id="prev-btn">◀ Précédent</button>
+            <select id="slide-select">
+                <!-- Options générées par JavaScript -->
+            </select>
+            <button id="next-btn">Suivant ▶</button>
+        </nav>
+
+        <div class="projecteur-aide">
+            ⌨️ Flèches ← → ou Espace pour naviguer
+        </div>
+    </div>
+
+    <script>
+        // État de l'application
+        let currentSlide = 1;
+        let totalSlides = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        // Initialisation
+        function init() {
+            totalSlides = slides.length;
+            document.getElementById('total-slides').textContent = totalSlides;
+            
+            // Générer les options du sélecteur
+            const select = document.getElementById('slide-select');
+            for (let i = 1; i <= totalSlides; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Diapo ${i}`;
+                select.appendChild(option);
+            }
+            
+            // Event listeners
+            document.getElementById('prev-btn').addEventListener('click', prevSlide);
+            document.getElementById('next-btn').addEventListener('click', nextSlide);
+            document.getElementById('slide-select').addEventListener('change', (e) => {
+                goToSlide(parseInt(e.target.value));
+            });
+            
+            // Navigation clavier
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') prevSlide();
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    e.preventDefault();
+                    nextSlide();
+                }
+                if (e.key === 'Home') goToSlide(1);
+                if (e.key === 'End') goToSlide(totalSlides);
+            });
+            
+            updateSlide();
+        }
+        
+        // Navigation
+        function nextSlide() {
+            // Vérifier s'il y a des éléments masqués à révéler
+            const currentSlideElement = slides[currentSlide - 1];
+            const hiddenElements = currentSlideElement.querySelectorAll('.Cmasque:not(.revealed)');
+            
+            if (hiddenElements.length > 0) {
+                // Révéler le premier élément masqué
+                hiddenElements[0].classList.add('revealed');
+            } else if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+        
+        function goToSlide(n) {
+            if (n >= 1 && n <= totalSlides) {
+                currentSlide = n;
+                updateSlide();
+            }
+        }
+        
+        // Mise à jour de l'affichage
+        function updateSlide() {
+            // Masquer toutes les slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Afficher la slide courante
+            slides[currentSlide - 1].classList.add('active');
+            
+            // Réinitialiser les éléments masqués de la slide courante
+            const currentSlideElement = slides[currentSlide - 1];
+            currentSlideElement.querySelectorAll('.Cmasque').forEach(el => {
+                el.classList.remove('revealed');
+            });
+            
+            // Mettre à jour les contrôles
+            document.getElementById('current-slide').textContent = currentSlide;
+            document.getElementById('slide-select').value = currentSlide;
+            document.getElementById('prev-btn').disabled = currentSlide === 1;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides;
+            
+            // Mettre à jour le titre de la page
+            const slideTitle = currentSlideElement.querySelector('h1, h2');
+            if (slideTitle) {
+                document.title = `${slideTitle.textContent} - Maîtriser Git`;
+            }
+        }
+        
+        // Démarrage
+        init();
+    </script>
+</body>
+</html>

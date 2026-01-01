@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maîtriser Git de A à Z</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/night.min.css">
+    <style>
+        .reveal h1, .reveal h2, .reveal h3 {
+            text-transform: none;
+        }
+        .reveal pre {
+            font-size: 0.55em;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        .reveal code {
+            background: #3f3f3f;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        .highlight {
+            color: #42affa;
+            font-weight: bold;
+        }
+        table {
+            font-size: 0.8em;
+            margin: 20px auto;
+        }
+        th {
+            background: #42affa;
+            color: white;
+        }
+        td, th {
+            padding: 10px;
+            border: 1px solid #555;
+        }
+        .emoji {
+            font-size: 2em;
+            vertical-align: middle;
+        }
+        .small-text {
+            font-size: 0.7em;
+        }
+        .git-command {
+            background: #1e1e1e;
+            color: #4EC9B0;
+            padding: 15px;
+            border-left: 4px solid #42affa;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Page de titre -->
+            <section data-background-gradient="linear-gradient(to bottom, #283b95, #17b2c3)">
+                <h1>🚀 Maîtriser Git de A à Z</h1>
+                <h3>Du versioning aux workflows professionnels</h3>
+                <p style="margin-top: 50px;">
+                    <small>Cours complet pour développeurs débutants</small>
+                </p>
+                <svg width="200" height="100" style="margin-top: 30px;">
+                    <circle cx="50" cy="50" r="30" fill="#f05033"/>
+                    <circle cx="100" cy="50" r="30" fill="#42affa"/>
+                    <circle cx="150" cy="50" r="30" fill="#f05033"/>
+                </svg>
+            </section>
+
+            <!-- Slide 2: Objectifs -->
+            <section>
+                <h2>🎯 Objectifs pédagogiques</h2>
+                <ul>
+                    <li class="fragment">Comprendre le <span class="highlight">contrôle de version</span></li>
+                    <li class="fragment">Maîtriser les <span class="highlight">commandes Git essentielles</span></li>
+                    <li class="fragment">Gérer les <span class="highlight">branches</span> efficacement</li>
+                    <li class="fragment">Résoudre les <span class="highlight">conflits de merge</span></li>
+                    <li class="fragment">Appliquer <span class="highlight">Git-flow</span></li>
+                    <li class="fragment">Utiliser <span class="highlight">GitHub Desktop</span></li>
+                </ul>
+            </section>
+
+            <!-- MODULE 1: VERSIONING -->
+            <section data-background-color="#283b95">
+                <h1>Module 1</h1>
+                <h2>Le principe du versioning</h2>
+            </section>
+
+            <section>
+                <h2>Pourquoi le versioning ?</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>❌ Sans Git</h3>
+                        <ul>
+                            <li>projet_final.zip</li>
+                            <li>projet_final_v2.zip</li>
+                            <li>projet_final_v2_vraiment_final.zip</li>
+                            <li>projet_final_v2_vraiment_final_cette_fois.zip</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>✅ Avec Git</h3>
+                        <ul>
+                            <li>Historique complet</li>
+                            <li>Collaboration fluide</li>
+                            <li>Traçabilité</li>
+                            <li>Retour en arrière</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Types de contrôle de version</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Exemples</th>
+                            <th>Caractéristiques</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Local</td>
+                            <td>RCS</td>
+                            <td>Machine locale uniquement</td>
+                        </tr>
+                        <tr>
+                            <td>Centralisé</td>
+                            <td>SVN, CVS</td>
+                            <td>Serveur central</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td><strong>Distribué</strong></td>
+                            <td><strong>Git, Mercurial</strong></td>
+                            <td><strong>Copie complète</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Le workflow Git</h2>
+                <svg width="900" height="250" style="margin: 20px auto;">
+                    <!-- Working Directory -->
+                    <rect x="10" y="50" width="180" height="150" fill="#3f3f3f" stroke="#42affa" stroke-width="2" rx="5"/>
+                    <text x="100" y="85" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Working</text>
+                    <text x="100" y="110" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Directory</text>
+                    <text x="100" y="140" text-anchor="middle" fill="#aaa" font-size="13">Fichiers</text>
+                    <text x="100" y="160" text-anchor="middle" fill="#aaa" font-size="13">modifiés</text>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 195 125 L 235 125" stroke="#42affa" stroke-width="3" fill="none" marker-end="url(#arrowblue)"/>
+                    <text x="215" y="115" text-anchor="middle" fill="#42affa" font-size="14" font-weight="bold">git add</text>
+
+                    <!-- Staging Area -->
+                    <rect x="240" y="50" width="180" height="150" fill="#3f3f3f" stroke="#f05033" stroke-width="2" rx="5"/>
+                    <text x="330" y="85" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Staging</text>
+                    <text x="330" y="110" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Area</text>
+                    <text x="330" y="140" text-anchor="middle" fill="#aaa" font-size="13">Prêts pour</text>
+                    <text x="330" y="160" text-anchor="middle" fill="#aaa" font-size="13">commit</text>
+
+                    <!-- Arrow 2 -->
+                    <path d="M 425 125 L 465 125" stroke="#f05033" stroke-width="3" fill="none" marker-end="url(#arrowred)"/>
+                    <text x="445" y="115" text-anchor="middle" fill="#f05033" font-size="14" font-weight="bold">git commit</text>
+
+                    <!-- Local Repository -->
+                    <rect x="470" y="50" width="180" height="150" fill="#3f3f3f" stroke="#4EC9B0" stroke-width="2" rx="5"/>
+                    <text x="560" y="85" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Local</text>
+                    <text x="560" y="110" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Repository</text>
+                    <text x="560" y="140" text-anchor="middle" fill="#aaa" font-size="13">Historique</text>
+                    <text x="560" y="160" text-anchor="middle" fill="#aaa" font-size="13">local</text>
+
+                    <!-- Arrow 3 -->
+                    <path d="M 655 125 L 695 125" stroke="#4EC9B0" stroke-width="3" fill="none" marker-end="url(#arrowgreen)"/>
+                    <text x="675" y="115" text-anchor="middle" fill="#4EC9B0" font-size="14" font-weight="bold">git push</text>
+
+                    <!-- Remote Repository -->
+                    <rect x="700" y="50" width="180" height="150" fill="#3f3f3f" stroke="#e0e000" stroke-width="2" rx="5"/>
+                    <text x="790" y="85" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Remote</text>
+                    <text x="790" y="110" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Repository</text>
+                    <text x="790" y="140" text-anchor="middle" fill="#aaa" font-size="13">GitHub</text>
+                    <text x="790" y="160" text-anchor="middle" fill="#aaa" font-size="13">GitLab...</text>
+
+                    <!-- Arrow markers -->
+                    <defs>
+                        <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#42affa"/>
+                        </marker>
+                        <marker id="arrowred" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#f05033"/>
+                        </marker>
+                        <marker id="arrowgreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#4EC9B0"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </section>
+
+            <!-- MODULE 2: COMMANDES -->
+            <section data-background-color="#17b2c3">
+                <h1>Module 2</h1>
+                <h2>Les commandes principales</h2>
+            </section>
+
+            <section>
+                <h2>Configuration initiale</h2>
+                <pre><code class="language-bash" data-trim>
+# Configuration obligatoire (identité)
+git config --global user.name "Votre Nom"
+git config --global user.email "votre.email@exemple.com"
+
+# Configurations recommandées
+git config --global init.defaultBranch main
+git config --global core.editor "code --wait"
+
+# Vérifier la configuration
+git config --list
+                </code></pre>
+            </section>
+
+            <section>
+                <h2>Commandes de base</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Commande</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>git init</code></td>
+                            <td>Initialise un nouveau dépôt</td>
+                        </tr>
+                        <tr>
+                            <td><code>git clone &lt;url&gt;</code></td>
+                            <td>Clone un dépôt distant</td>
+                        </tr>
+                        <tr>
+                            <td><code>git status</code></td>
+                            <td>Affiche l'état des fichiers</td>
+                        </tr>
+                        <tr>
+                            <td><code>git add .</code></td>
+                            <td>Ajoute tout au staging</td>
+                        </tr>
+                        <tr>
+                            <td><code>git commit -m "msg"</code></td>
+                            <td>Enregistre les modifications</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Synchronisation</h2>
+                <div class="git-command">
+                    <div>$ git remote add origin https://github.com/user/repo.git</div>
+                    <div>$ git push -u origin main</div>
+                    <div>$ git pull</div>
+                </div>
+                <p class="fragment" style="margin-top: 30px;">
+                    <span class="emoji">⚠️</span> 
+                    <span class="highlight">Règle d'or :</span> Toujours faire <code>git pull</code> avant de commencer à travailler !
+                </p>
+            </section>
+
+            <section>
+                <h2>Annulation</h2>
+                <pre><code class="language-bash" data-trim>
+# Annuler des modifications non stagées
+git restore &lt;fichier&gt;
+
+# Retirer du staging
+git restore --staged &lt;fichier&gt;
+
+# Annuler un commit (crée un nouveau commit)
+git revert &lt;commit&gt;
+
+# Annuler le dernier commit (garde les modifs)
+git reset --soft HEAD~1
+                </code></pre>
+            </section>
+
+            <!-- MODULE 3: BRANCHES -->
+            <section data-background-color="#283b95">
+                <h1>Module 3</h1>
+                <h2>Les branches</h2>
+            </section>
+
+            <section>
+                <h2>Pourquoi les branches ?</h2>
+                <ul>
+                    <li class="fragment">✨ Développer des fonctionnalités isolées</li>
+                    <li class="fragment">👥 Travail parallèle en équipe</li>
+                    <li class="fragment">🔍 Faciliter les revues de code</li>
+                    <li class="fragment">🐛 Isoler les corrections de bugs</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>Visualisation des branches</h2>
+                <svg width="700" height="300" style="margin: 20px auto;">
+                    <!-- Main branch -->
+                    <line x1="50" y1="150" x2="650" y2="150" stroke="#42affa" stroke-width="3"/>
+                    <circle cx="100" cy="150" r="10" fill="#42affa"/>
+                    <circle cx="200" cy="150" r="10" fill="#42affa"/>
+                    <circle cx="300" cy="150" r="10" fill="#42affa"/>
+                    <circle cx="400" cy="150" r="10" fill="#42affa"/>
+                    <circle cx="500" cy="150" r="10" fill="#42affa"/>
+                    <circle cx="600" cy="150" r="10" fill="#42affa"/>
+                    
+                    <text x="100" y="180" text-anchor="middle" fill="white" font-size="14">main</text>
+
+                    <!-- Feature branch -->
+                    <path d="M 200 150 Q 250 100, 300 50 L 450 50 Q 500 50, 550 100 L 600 150" 
+                          stroke="#f05033" stroke-width="3" fill="none"/>
+                    <circle cx="300" cy="50" r="10" fill="#f05033"/>
+                    <circle cx="375" cy="50" r="10" fill="#f05033"/>
+                    <circle cx="450" cy="50" r="10" fill="#f05033"/>
+                    
+                    <text x="375" y="30" text-anchor="middle" fill="#f05033" font-size="14" font-weight="bold">feature-login</text>
+
+                    <!-- Develop branch -->
+                    <path d="M 100 150 L 100 250 L 550 250" 
+                          stroke="#4EC9B0" stroke-width="3" fill="none"/>
+                    <circle cx="200" cy="250" r="10" fill="#4EC9B0"/>
+                    <circle cx="350" cy="250" r="10" fill="#4EC9B0"/>
+                    <circle cx="500" cy="250" r="10" fill="#4EC9B0"/>
+                    
+                    <text x="350" y="280" text-anchor="middle" fill="#4EC9B0" font-size="14">develop</text>
+                </svg>
+            </section>
+
+            <section>
+                <h2>Commandes de gestion</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>Commande</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lister les branches</td>
+                            <td><code>git branch</code></td>
+                        </tr>
+                        <tr>
+                            <td>Créer une branche</td>
+                            <td><code>git branch &lt;nom&gt;</code></td>
+                        </tr>
+                        <tr class="highlight">
+                            <td><strong>Changer de branche</strong></td>
+                            <td><code>git switch &lt;nom&gt;</code> ⭐</td>
+                        </tr>
+                        <tr>
+                            <td>Créer et basculer</td>
+                            <td><code>git switch -c &lt;nom&gt;</code></td>
+                        </tr>
+                        <tr>
+                            <td>Fusionner</td>
+                            <td><code>git merge &lt;branche&gt;</code></td>
+                        </tr>
+                        <tr>
+                            <td>Supprimer</td>
+                            <td><code>git branch -d &lt;nom&gt;</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Fusion de branches (merge)</h2>
+                <div class="two-columns">
+                    <div>
+                        <h4>Avant merge</h4>
+                        <svg width="350" height="200">
+                            <line x1="50" y1="100" x2="250" y2="100" stroke="#42affa" stroke-width="3"/>
+                            <circle cx="80" cy="100" r="8" fill="#42affa"/>
+                            <circle cx="140" cy="100" r="8" fill="#42affa"/>
+                            
+                            <path d="M 140 100 L 200 50" stroke="#f05033" stroke-width="3" fill="none"/>
+                            <circle cx="200" cy="50" r="8" fill="#f05033"/>
+                            <circle cx="250" cy="50" r="8" fill="#f05033"/>
+                            
+                            <text x="80" y="130" text-anchor="middle" fill="white" font-size="12">main</text>
+                            <text x="225" y="35" text-anchor="middle" fill="#f05033" font-size="12">feature</text>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4>Après merge</h4>
+                        <svg width="350" height="200">
+                            <line x1="50" y1="100" x2="300" y2="100" stroke="#42affa" stroke-width="3"/>
+                            <circle cx="80" cy="100" r="8" fill="#42affa"/>
+                            <circle cx="140" cy="100" r="8" fill="#42affa"/>
+                            <circle cx="280" cy="100" r="8" fill="#42affa"/>
+                            
+                            <path d="M 140 100 L 200 50 L 280 100" stroke="#f05033" stroke-width="3" fill="none"/>
+                            <circle cx="200" cy="50" r="8" fill="#f05033"/>
+                            <circle cx="250" cy="50" r="8" fill="#f05033"/>
+                            
+                            <text x="80" y="130" text-anchor="middle" fill="white" font-size="12">main</text>
+                            <text x="280" y="130" text-anchor="middle" fill="#4EC9B0" font-size="12">merge commit</text>
+                        </svg>
+                    </div>
+                </div>
+                <pre style="margin-top: 20px;"><code class="language-bash" data-trim>
+git switch main
+git merge --no-ff feature-login
+                </code></pre>
+            </section>
+
+            <!-- MODULE 4: CONFLITS -->
+            <section data-background-color="#17b2c3">
+                <h1>Module 4</h1>
+                <h2>Gestion des conflits</h2>
+            </section>
+
+            <section>
+                <h2>Qu'est-ce qu'un conflit ?</h2>
+                <p>Un conflit survient quand Git ne peut pas fusionner automatiquement deux modifications sur les mêmes lignes.</p>
+                <svg width="700" height="250" style="margin-top: 30px;">
+                    <!-- Timeline -->
+                    <line x1="100" y1="125" x2="600" y2="125" stroke="#555" stroke-width="2"/>
+                    
+                    <!-- Initial state -->
+                    <circle cx="150" cy="125" r="15" fill="#42affa"/>
+                    <text x="150" y="100" text-anchor="middle" fill="white" font-size="13">Initial</text>
+                    <text x="150" y="165" text-anchor="middle" fill="#aaa" font-size="12">"Hello World"</text>
+                    
+                    <!-- Branch A -->
+                    <path d="M 150 125 L 300 60" stroke="#f05033" stroke-width="2" fill="none"/>
+                    <circle cx="300" cy="60" r="15" fill="#f05033"/>
+                    <text x="300" y="35" text-anchor="middle" fill="#f05033" font-size="13">Dev A</text>
+                    <text x="300" y="90" text-anchor="middle" fill="#aaa" font-size="11">"Bonjour"</text>
+                    
+                    <!-- Branch B -->
+                    <path d="M 150 125 L 300 190" stroke="#4EC9B0" stroke-width="2" fill="none"/>
+                    <circle cx="300" cy="190" r="15" fill="#4EC9B0"/>
+                    <text x="300" y="220" text-anchor="middle" fill="#4EC9B0" font-size="13">Dev B</text>
+                    <text x="300" y="240" text-anchor="middle" fill="#aaa" font-size="11">"Hello Universe"</text>
+                    
+                    <!-- Merge point -->
+                    <path d="M 300 60 L 500 125" stroke="#f05033" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                    <path d="M 300 190 L 500 125" stroke="#4EC9B0" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                    <circle cx="500" cy="125" r="20" fill="#ff6b6b" stroke="#fff" stroke-width="2"/>
+                    <text x="500" y="133" text-anchor="middle" fill="white" font-size="20" font-weight="bold">⚠</text>
+                    <text x="500" y="100" text-anchor="middle" fill="#ff6b6b" font-size="14" font-weight="bold">CONFLIT!</text>
+                </svg>
+            </section>
+
+            <section>
+                <h2>Anatomie d'un conflit</h2>
+                <pre><code class="language-bash" data-trim>
+<<<<<<< HEAD
+Bonjour le Monde
+=======
+Hello Universe
+>>>>>>> feature-branch
+                </code></pre>
+                <table style="margin-top: 30px;">
+                    <tr>
+                        <td><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></td>
+                        <td>Début de votre version</td>
+                    </tr>
+                    <tr>
+                        <td><code>=======</code></td>
+                        <td>Séparateur</td>
+                    </tr>
+                    <tr>
+                        <td><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature</code></td>
+                        <td>Fin de la version entrante</td>
+                    </tr>
+                </table>
+            </section>
+
+            <section>
+                <h2>Résolution étape par étape</h2>
+                <ol>
+                    <li class="fragment"><code>git status</code> → Identifier les fichiers en conflit</li>
+                    <li class="fragment">Ouvrir et résoudre manuellement chaque fichier</li>
+                    <li class="fragment">Supprimer les marqueurs de conflit</li>
+                    <li class="fragment"><code>git add &lt;fichier&gt;</code> → Marquer comme résolu</li>
+                    <li class="fragment"><code>git commit</code> → Finaliser le merge</li>
+                </ol>
+                <p class="fragment" style="margin-top: 40px;">
+                    <span class="emoji">💡</span> 
+                    <span class="highlight">Astuce :</span> VS Code et GitHub Desktop offrent des interfaces visuelles !
+                </p>
+            </section>
+
+            <!-- MODULE 5: GIT-FLOW -->
+            <section data-background-color="#283b95">
+                <h1>Module 5</h1>
+                <h2>Git-flow (méthodologie)</h2>
+            </section>
+
+            <section>
+                <h2>Pourquoi une méthodologie ?</h2>
+                <p class="fragment">Sans convention → chaos organisationnel</p>
+                <table style="margin-top: 30px;">
+                    <thead>
+                        <tr>
+                            <th>Stratégie</th>
+                            <th>Complexité</th>
+                            <th>Idéal pour</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GitHub Flow</td>
+                            <td>Simple</td>
+                            <td>Petites équipes, startups</td>
+                        </tr>
+                        <tr class="highlight">
+                            <td><strong>Git-flow</strong></td>
+                            <td><strong>Complexe</strong></td>
+                            <td><strong>Grandes équipes, releases</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Trunk-Based</td>
+                            <td>Moyenne</td>
+                            <td>DevOps, CI/CD mature</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Les branches Git-flow</h2>
+                <svg width="800" height="400" style="margin: 20px auto;">
+                    <!-- Main branch -->
+                    <line x1="50" y1="200" x2="750" y2="200" stroke="#42affa" stroke-width="4"/>
+                    <circle cx="100" cy="200" r="12" fill="#42affa"/>
+                    <circle cx="300" cy="200" r="12" fill="#42affa"/>
+                    <circle cx="500" cy="200" r="12" fill="#42affa"/>
+                    <circle cx="700" cy="200" r="12" fill="#42affa"/>
+                    <text x="100" y="235" text-anchor="middle" fill="#42affa" font-size="16" font-weight="bold">main</text>
+                    <text x="750" y="240" text-anchor="middle" fill="#42affa" font-size="14">production</text>
+
+                    <!-- Develop branch -->
+                    <line x1="50" y1="280" x2="750" y2="280" stroke="#4EC9B0" stroke-width="4"/>
+                    <circle cx="100" cy="280" r="10" fill="#4EC9B0"/>
+                    <circle cx="200" cy="280" r="10" fill="#4EC9B0"/>
+                    <circle cx="400" cy="280" r="10" fill="#4EC9B0"/>
+                    <circle cx="600" cy="280" r="10" fill="#4EC9B0"/>
+                    <text x="100" y="315" text-anchor="middle" fill="#4EC9B0" font-size="16" font-weight="bold">develop</text>
+
+                    <!-- Feature branch -->
+                    <path d="M 200 280 L 250 330 L 350 330 L 400 280" stroke="#f05033" stroke-width="3" fill="none"/>
+                    <circle cx="250" cy="330" r="8" fill="#f05033"/>
+                    <circle cx="300" cy="330" r="8" fill="#f05033"/>
+                    <circle cx="350" cy="330" r="8" fill="#f05033"/>
+                    <text x="300" y="360" text-anchor="middle" fill="#f05033" font-size="13">feature/login</text>
+
+                    <!-- Release branch -->
+                    <path d="M 400 280 L 450 230 L 500 200" stroke="#e0e000" stroke-width="3" fill="none"/>
+                    <circle cx="450" cy="230" r="8" fill="#e0e000"/>
+                    <text x="480" y="220" text-anchor="middle" fill="#e0e000" font-size="13">release/v1.0</text>
+
+                    <!-- Hotfix branch -->
+                    <path d="M 500 200 L 550 150 L 600 150 L 650 175 L 700 200" stroke="#ff6b6b" stroke-width="3" fill="none"/>
+                    <circle cx="550" cy="150" r="8" fill="#ff6b6b"/>
+                    <circle cx="600" cy="150" r="8" fill="#ff6b6b"/>
+                    <circle cx="650" cy="175" r="8" fill="#ff6b6b"/>
+                    <text x="600" y="135" text-anchor="middle" fill="#ff6b6b" font-size="13">hotfix/urgent</text>
+                </svg>
+            </section>
+
+            <section>
+                <h2>Types de branches</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Branche</th>
+                            <th>Rôle</th>
+                            <th>Durée</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>main</code></td>
+                            <td>Code en production</td>
+                            <td>Permanente</td>
+                        </tr>
+                        <tr>
+                            <td><code>develop</code></td>
+                            <td>Intégration des features</td>
+                            <td>Permanente</td>
+                        </tr>
+                        <tr>
+                            <td><code>feature/*</code></td>
+                            <td>Nouvelles fonctionnalités</td>
+                            <td>Temporaire</td>
+                        </tr>
+                        <tr>
+                            <td><code>release/*</code></td>
+                            <td>Préparation release</td>
+                            <td>Temporaire</td>
+                        </tr>
+                        <tr>
+                            <td><code>hotfix/*</code></td>
+                            <td>Correction urgente prod</td>
+                            <td>Temporaire</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Cycle d'une feature</h2>
+                <pre><code class="language-bash" data-trim>
+# 1. Créer la feature depuis develop
+git switch develop
+git switch -c feature/user-authentication
+
+# 2. Développer (plusieurs commits)
+git commit -m "Add login form"
+git commit -m "Add password validation"
+
+# 3. Fusionner dans develop
+git switch develop
+git merge --no-ff feature/user-authentication
+git branch -d feature/user-authentication
+                </code></pre>
+            </section>
+
+            <!-- MODULE 6: GITHUB DESKTOP -->
+            <section data-background-color="#17b2c3">
+                <h1>Module 6</h1>
+                <h2>GitHub avec GitHub Desktop</h2>
+            </section>
+
+            <section>
+                <h2>GitHub Desktop</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Caractéristiques</h3>
+                        <ul>
+                            <li>✅ Gratuit et open-source</li>
+                            <li>✅ Windows et macOS</li>
+                            <li>✅ Interface intuitive</li>
+                            <li>✅ Visualisation des diff</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Opérations</h3>
+                        <ul>
+                            <li>Cloner un repo</li>
+                            <li>Créer des commits</li>
+                            <li>Gérer les branches</li>
+                            <li>Résoudre les conflits</li>
+                            <li>Push/Pull</li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="margin-top: 40px;">
+                    <span class="emoji">🔗</span> 
+                    <a href="https://desktop.github.com" style="color: #42affa;">desktop.github.com</a>
+                </p>
+            </section>
+
+            <section>
+                <h2>Workflow avec GitHub Desktop</h2>
+                <ol>
+                    <li class="fragment">Cloner un dépôt depuis GitHub</li>
+                    <li class="fragment">Créer une branche <code>feature/ma-contribution</code></li>
+                    <li class="fragment">Modifier des fichiers (visualiser les diff)</li>
+                    <li class="fragment">Créer un commit avec message descriptif</li>
+                    <li class="fragment">Pusher la branche</li>
+                    <li class="fragment">Créer une Pull Request sur GitHub</li>
+                    <li class="fragment">Reviewer et merger</li>
+                </ol>
+            </section>
+
+            <!-- MODULE 7: ALTERNATIVES -->
+            <section data-background-color="#283b95">
+                <h1>Module 7</h1>
+                <h2>Alternatives à GitHub</h2>
+            </section>
+
+            <section>
+                <h2>GitLab</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Caractéristiques</h3>
+                        <ul>
+                            <li>Plateforme DevOps complète</li>
+                            <li>CI/CD intégré nativement</li>
+                            <li>Cloud ou self-hosted</li>
+                            <li>DevSecOps avancé</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Quand l'utiliser ?</h3>
+                        <ul>
+                            <li>CI/CD intégré souhaité</li>
+                            <li>Hébergement propre</li>
+                            <li>Grandes entreprises</li>
+                            <li>Sécurité renforcée</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Gitea</h2>
+                <div class="two-columns">
+                    <div>
+                        <h3>Caractéristiques</h3>
+                        <ul>
+                            <li>Service Git minimaliste</li>
+                            <li>Très léger (Raspberry Pi OK)</li>
+                            <li>Exécutable unique en Go</li>
+                            <li>100% gratuit (MIT)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Quand l'utiliser ?</h3>
+                        <ul>
+                            <li>Ressources limitées</li>
+                            <li>Projets personnels</li>
+                            <li>Homelab</li>
+                            <li>Simplicité maximale</li>
+                        </ul>
+                    </div>
+                </div>
+                <p style="margin-top: 30px;">
+                    <span class="emoji">☕</span> 
+                    <em>"Git with a cup of tea!"</em>
+                </p>
+            </section>
+
+            <section>
+                <h2>Comparatif</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Critère</th>
+                            <th>GitHub</th>
+                            <th>GitLab</th>
+                            <th>Gitea</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Facilité</td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                            <td>⭐⭐⭐⭐</td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td>CI/CD intégré</td>
+                            <td>Actions</td>
+                            <td>Natif</td>
+                            <td>Non</td>
+                        </tr>
+                        <tr>
+                            <td>Self-hosted</td>
+                            <td>Enterprise</td>
+                            <td>Oui</td>
+                            <td>Oui</td>
+                        </tr>
+                        <tr>
+                            <td>Idéal pour</td>
+                            <td>Open source</td>
+                            <td>Entreprises</td>
+                            <td>Petits projets</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- CONCLUSION -->
+            <section>
+                <h2>📚 Ressources complémentaires</h2>
+                <ul>
+                    <li><a href="https://git-scm.com/doc" style="color: #42affa;">git-scm.com/doc</a> - Documentation officielle</li>
+                    <li><a href="https://learngitbranching.js.org" style="color: #42affa;">learngitbranching.js.org</a> - Apprentissage interactif</li>
+                    <li><a href="https://docs.github.com" style="color: #42affa;">docs.github.com</a> - Documentation GitHub</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>🎓 Aide-mémoire</h2>
+                <pre><code class="language-bash" data-trim style="font-size: 0.45em;">
+# Configuration
+git config --global user.name "Nom"
+git config --global user.email "email@exemple.com"
+
+# Bases
+git init                    # Initialiser
+git clone &lt;url&gt;            # Cloner
+git status                  # État
+git add .                   # Tout ajouter
+git commit -m "message"     # Committer
+
+# Branches
+git branch                  # Lister
+git switch &lt;branche&gt;       # Changer
+git switch -c &lt;nouvelle&gt;   # Créer et changer
+git merge &lt;branche&gt;        # Fusionner
+
+# Synchronisation
+git push -u origin main     # Premier push
+git pull                    # Récupérer
+                </code></pre>
+            </section>
+
+            <section data-background-gradient="linear-gradient(to bottom, #283b95, #17b2c3)">
+                <h1>Merci ! 🎉</h1>
+                <h2>Questions ?</h2>
+                <p style="margin-top: 50px;">
+                    <span class="emoji">💻</span> Bonne pratique de Git !
+                </p>
+                <svg width="200" height="100" style="margin-top: 30px;">
+                    <circle cx="50" cy="50" r="30" fill="#f05033"/>
+                    <circle cx="100" cy="50" r="30" fill="#42affa"/>
+                    <circle cx="150" cy="50" r="30" fill="#4EC9B0"/>
+                </svg>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            plugins: [ RevealHighlight ],
+            width: 1280,
+            height: 720,
+            margin: 0.1,
+            controls: true,
+            progress: true,
+            center: true
+        });
+    </script>
+</body>
+</html>
